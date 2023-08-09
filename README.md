@@ -24,7 +24,7 @@ If you use the code or embeddings, please cite the following paper:
 
 For lexical substitution, see also [this repository](https://github.com/twadada/lexsub_decontextualised)
 
-## Reproduce Experiments for paraphrasing MWEs
+## Reproduce Experiments for paraphrasing MWEs using BERT
 
 1. Clone the [SemEval-22 Task2 repository](https://github.com/H-TayyarMadabushi/SemEval_2022_Task2-idiomaticity) at this folder
 
@@ -34,7 +34,7 @@ For lexical substitution, see also [this repository](https://github.com/twadada/
 python preprocess_B.py -tgtlang EN -data_split train -sim_1 
 ```
 
-This will produce "SEMEVAL_B_MWE.unique.train.EN.txt" (A list of MWEs used in the train split of the SemEval data), "SEMEVAL_B_MWE_sim1_sent.train.EN.txt" (MWEs and sentences), and "gold_paraphrases.train.EN.txt" (gold paraprhases). Replace EN with PT for the Portuguese data.
+This will produce "SEMEVAL_B_MWE.unique.train.EN.txt" (A list of MWEs used in the train split of the SemEval data), "SEMEVAL_B_MWE_sim1_sent.train.EN.txt" (MWEs and sentences), and "gold_paraphrases.train.EN.txt" (gold paraprhases). Replace EN with PT for preparing the Portuguese data.
 
 3. Collect sentences
 
@@ -54,9 +54,12 @@ python remove_duplicates.py -silver_sent ${silver_sent} -model bert-base-uncased
 ```
 5. Cluster the collected contexts
 
+You may skip the 3rd and 4th steps and prepare the sampled sentences by yourself. The data format is dict{"MWE": List(sentences containing the MWE)} in a pickled file.
+
 ```
 sent=${folder}/$(basename "${MWEfile}")_silversent_cleaned.pkl
 mindist=0.4
+# mindist = ϵ; need to be tuned for each model, in the range of [0.1, 0.5]
 min_sample=0.03
 clustering=dbscan_${mindist}_${min_sample}
 cluster_model=bert-base-uncased
@@ -69,13 +72,14 @@ CUDA_VISIBLE_DEVICES=0 python clustering.py -clustering ${clustering} -N_sample 
 ```
 
 6. Generate paraphrases for each cluster
+   
 ```
 clustered_sents="${cluster_folder}/sents_by_cluster_dbscan_0.4_0.03.pkl"
 folder=Result
 model=bert-base-uncased
 n_mask=1
 beam_size=10
-echo "Generate 1-word paraphrase"
+echo "Generate 1-word paraphrases"
 CUDA_VISIBLE_DEVICES=0 python bert_generate.py  -clustered_sents ${clustered_sents} -folder ${folder} -model ${model} -n_mask $n_mask -num_beams ${beam_size}
 
 n_mask=2
@@ -92,7 +96,7 @@ mask_opt=attn_Nmask5_Nsplit1_attnL1_norm0
 CUDA_VISIBLE_DEVICES=0 python outer_prob_new.py -clustered_sents ${clustered_sents} -folder $folder -mask_opt ${mask_opt} -candidates ${MWE_para} -model ${model}
 ```
 
-8. Retrieve relevant 
+8. Retrieve relevant paraphrases given target sentences
 
 ```
 MWE_para_outer=${folder}/candidates2outer_score_model_${model}_${mask_opt}.pkl
