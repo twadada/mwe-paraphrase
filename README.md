@@ -102,7 +102,7 @@ beam_size=20
 CUDA_VISIBLE_DEVICES=0 python generate.py  -clustered_sents ${clustered_sents} -folder ${folder} -model ${model} -n_mask $n_mask -num_beams ${beam_size}
 ```
 
-7. Perform reranking; the code assumes using the same model used for generation in the previous step.
+7. Perform reranking (**the code assumes using the same model used for generation in the previous step**).
 
 ```
 model=bert-base-uncased
