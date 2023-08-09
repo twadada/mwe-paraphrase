@@ -144,8 +144,6 @@ if __name__ == "__main__":
         assert mwe2 == "None"
         if mwe1 != "None":
             x.add(mwe1)
-    print(len(x))
-    print("@@@@")
     # header_submit, data_submit = load_csv("SemEval_2022_Task2-idiomaticity/SubTaskB/TestData/test_submission_format.csv")
     x = set([])
     for f in file:
