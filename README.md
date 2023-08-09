@@ -114,9 +114,9 @@ CUDA_VISIBLE_DEVICES=0 python outer_prob_new.py -clustered_sents ${clustered_sen
 Run the following command for using T5
 
 ```
+model=google/t5-v1_1-large
 MWE_para="${folder}/1MASKs_candidates2inner_score.pkl"
 mask_opt=Rspan_Nmask5_Nsplit1
-model=google/t5-v1_1-large
 CUDA_VISIBLE_DEVICES=0 python outer_prob_new.py -clustered_sents ${clustered_sents} -folder $folder -mask_opt ${mask_opt} -candidates ${MWE_para} -model ${model}
 ```
 
