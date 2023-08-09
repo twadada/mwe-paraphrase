@@ -144,4 +144,4 @@ in_out_w=1
 python eval_matching.py -remove_space -len_normalise -candidates ${candidates} -save ${save_file} -gold_labels ${gold} -sent_list ${target_sent} -in_out_w ${in_out_w}
 ```
 
-(If you set in_out_w to 0.5, it sorts paraphrases by averaging rankings based on the outer probability and mask-filling probability, which may work better on some data.)
+(If you set in_out_w=0.5, it sorts paraphrases by averaging rankings based on the outer probability and mask-filling probability, which may work better on some data.)
