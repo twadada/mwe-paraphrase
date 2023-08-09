@@ -20,10 +20,10 @@ If you use the code or embeddings, please cite the following paper:
     pages = "4732--4746",
     abstract = "We propose an unsupervised approach to paraphrasing multiword expressions (MWEs) in context. Our model employs only monolingual corpus data and pre-trained language models (without fine-tuning), and does not make use of any external resources such as dictionaries. We evaluate our method on the SemEval 2022 idiomatic semantic text similarity task, and show that it outperforms all unsupervised systems and rivals supervised systems.",
 }
+```
 
 For lexical substitution, see also [this repository](https://github.com/twadada/lexsub_decontextualised)
 
-```
 ## Reproduce Experiments for paraphrasing MWEs
 
 1. Clone the [SemEval-22 Task2 repository](https://github.com/H-TayyarMadabushi/SemEval_2022_Task2-idiomaticity) at this folder
