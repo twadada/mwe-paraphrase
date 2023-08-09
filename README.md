@@ -22,7 +22,7 @@ If you use the code or embeddings, please cite the following paper:
 }
 ```
 
-For lexical substitution, see also [this repository](https://github.com/twadada/lexsub_decontextualised)
+For lexical substitution, see also [this repository](https://github.com/twadada/lexsub_decontextualised).
 
 ## Reproduce Experiments for paraphrasing MWEs using BERT
 
@@ -41,6 +41,7 @@ This will produce "SEMEVAL_B_MWE.unique.train.EN.txt" (A list of MWEs used in th
 ```
 N_words=2
 MWEfile=SEMEVAL_B_MWE.unique.train.EN.txt
+# MWEfile = a list of target MWEs containing ${N_words} (one MWE for each line)
 monofile=path_to_large_monolingual_data (we used OSCAR)
 folder=folder_path
 mkdir $folder
@@ -52,14 +53,15 @@ python extract_sentence.py -MWEfile ${MWEfile} -monofile ${monofile} -N_words ${
 silver_sent=${folder}/$(basename "${MWEfile}")_silversent.pkl
 python remove_duplicates.py -silver_sent ${silver_sent} -model bert-base-uncased
 ```
+
 5. Cluster the collected contexts
 
-You may skip the 3rd and 4th steps and prepare the sampled sentences by yourself. The data format is dict{"MWE": List(sentences containing the MWE)} in a pickled file.
+You may skip the 3rd and 4th steps and prepare the sampled sentences ($sent) by yourself. The data format is dict{"MWE": List(sentences containing the MWE)} in a pickled file.
 
 ```
 sent=${folder}/$(basename "${MWEfile}")_silversent_cleaned.pkl
 mindist=0.4
-# mindist = ϵ; need to be tuned for each model, in the range of [0.1, 0.5]
+# mindist = ϵ; this value needs to be tuned for each LM in the range of [0.1, 0.5]
 min_sample=0.03
 clustering=dbscan_${mindist}_${min_sample}
 cluster_model=bert-base-uncased
@@ -107,6 +109,8 @@ save=${folder}/reranked_${mask_opt}
 CUDA_VISIBLE_DEVICES=0 python retrieve_paraphrase.py -vec ${vec} -save ${save} -folder ${folder} -MWE_para ${MWE_para_outer} -model ${model} -target_sent ${target_sent}
 ```
 
+This will output ${folder}/reranked_attn_Nmask5_Nsplit1_attnL1_norm0_SEMEVAL_B_MWE_sim1_sent.train.EN.txt.pkl. This file pickles a Python list that consists of a list of their paraphrases with scores ([outer_probability, mask-filling probability]) for each target sentence.
+
 8. Evaluate MWE Paraphrases
 
 ```
@@ -114,6 +118,9 @@ candidates=${folder}/reranked_attn_Nmask5_Nsplit1_attnL1_norm0_SEMEVAL_B_MWE_sim
 gold=gold_paraphrases.train.EN.txt
 target_sent=SEMEVAL_B_MWE_sim1_sent.train.EN.txt
 save_file=matching_result.txt
-python eval_matching.py -remove_space -len_normalise -candidates ${candidates} -save ${save_file} -gold_labels ${gold} -sent_list ${target_sent}
+in_out_w=1
+python eval_matching.py -remove_space -len_normalise -candidates ${candidates} -save ${save_file} -gold_labels ${gold} -sent_list ${target_sent} -in_out_w ${in_out_w}
 ```
+
+(If you set in_out_w to 0.5, it sorts paraphrases based on the rankings of the outer probability and mask-filling probability, which may work better on some data.)
 
