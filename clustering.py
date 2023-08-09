@@ -130,9 +130,9 @@ if __name__ == "__main__":
 
     colorlist = ["r", "b", "k", "m", "y", "g","c","w"]
     with open(opt.silver_sent, 'rb') as f:
-        phrase2sent_1B = pickle.load(f)
+        phrase2sent = pickle.load(f)
 
-    v = list(phrase2sent_1B.keys())
+    v = list(phrase2sent.keys())
 
     if opt.MWE_list is not None:
         import os.path
@@ -186,37 +186,20 @@ if __name__ == "__main__":
                     # print(phrase)
                     assert phrase[0] != " "
                     count+=1
-                    sentences_raw = phrase2sent_1B[phrase]
+                    sentences_raw = phrase2sent[phrase]
                     assert isinstance(sentences_raw, list)
                     if len(sentences_raw)>=1:
                         sentences_raw = sentences_raw[:opt.N_sample]
-                        if model.model_name == 'gpt2':
-                            for j in range(len(sentences_raw)):
-                                sentences_raw[j] = "<|endoftext|>" + sentences_raw[j]
-                        else:
-                            sentences = tokenizer(sentences_raw)["input_ids"]
+                        sentences = tokenizer(sentences_raw)["input_ids"]
                         for x in sentences:
                             assert len(x) < 512 #max token length
                         phrase = " " + phrase #add space
-                        if model_path.startswith("cl-tohoku/bert"):
-                            #phrase: 年 ##明け (pre-tokenised)
-                            phrase_tokenised_ids = tokenizer.convert_tokens_to_ids(phrase.lstrip().split())
-                        else:
-                            phrase_tokenised_ids = tokenise_phrase(model, tokenizer, phrase)
-
+                        phrase_tokenised_ids = tokenise_phrase(model, tokenizer, phrase)
                         paraphrases = []
-                        mask_ids = phrase_tokenised_ids
-                        if opt.n_mask == 0:
-                            n_mask = len(phrase_tokenised_ids)
-                            mask_ids_replace = phrase_tokenised_ids
-                        else: #not mask
-                            if opt.n_mask == -1: #Adaptive or zero masking
-                                n_mask  = len(phrase_tokenised_ids) #
-                            mask_ids_replace = [tokenizer.mask_token_id for _ in range(n_mask)]
-
+                        mask_ids_replace = [tokenizer.mask_token_id for _ in range(n_mask)]
                         sentences_masked, mask_row_idx, mask_col_idx,\
                         _, _, _ =\
-                            Identify_Key_Indices(sentences, mask_ids, mask_ids_replace, opt.window, tokenizer, stop_words_ids, "span_two", None)
+                            Identify_Key_Indices(sentences, phrase_tokenised_ids, mask_ids_replace, opt.window, tokenizer, stop_words_ids, "span_two", None)
                         gold_sent = " ".join(tokenizer.convert_ids_to_tokens(sentences_masked[0]))
                         if opt.clustering == "none" and len(sentences_masked)>4:
                             sentences_raw_tmp = [sentences_raw[idx] for idx in range(len(sentences_raw))]
