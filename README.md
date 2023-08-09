@@ -73,6 +73,8 @@ echo "clustering"
 CUDA_VISIBLE_DEVICES=0 python clustering.py -clustering ${clustering} -N_sample ${N_sample}  -folder $cluster_folder -model ${cluster_model} -silver_sent ${sent} -n_mask $n_mask
 ```
 
+Replace cluster_model=bert-base-uncased with google/t5-v1_1-large for clustering sentences using T5. That said, BERT might perform better for clustering.
+
 6. Generate paraphrases for each cluster
    
 ```
@@ -90,11 +92,31 @@ echo "Generate 2-word paraphrases"
 CUDA_VISIBLE_DEVICES=0 python bert_generate.py  -clustered_sents ${clustered_sents} -folder ${folder} -model ${model} -n_mask $n_mask -num_beams ${beam_size}
 ```
 
+Run the following command for using T5
+```
+clustered_sents="${cluster_folder}/sents_by_cluster_dbscan_0.4_0.03.pkl"
+folder=Result
+model=google/t5-v1_1-large
+n_mask=1
+beam_size=20
+CUDA_VISIBLE_DEVICES=0 python bert_generate.py -t5  -clustered_sents ${clustered_sents} -folder ${folder} -model ${model} -n_mask $n_mask -num_beams ${beam_size}
+```
+
 7. Perform reranking
 
 ```
+model=bert-base-uncased
 MWE_para="${folder}/2MASKs_candidates2inner_score.pkl ${folder}/1MASKs_candidates2inner_score.pkl"
 mask_opt=attn_Nmask5_Nsplit1_attnL1_norm0
+CUDA_VISIBLE_DEVICES=0 python outer_prob_new.py -clustered_sents ${clustered_sents} -folder $folder -mask_opt ${mask_opt} -candidates ${MWE_para} -model ${model}
+```
+
+Run the following command for using T5
+
+```
+MWE_para="${folder}/1MASKs_candidates2inner_score.pkl"
+mask_opt=Rspan_Nmask5_Nsplit1
+model=google/t5-v1_1-large
 CUDA_VISIBLE_DEVICES=0 python outer_prob_new.py -clustered_sents ${clustered_sents} -folder $folder -mask_opt ${mask_opt} -candidates ${MWE_para} -model ${model}
 ```
 
