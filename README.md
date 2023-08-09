@@ -131,9 +131,9 @@ save=${folder}/reranked_${mask_opt}
 CUDA_VISIBLE_DEVICES=0 python retrieve_paraphrase.py -vec ${vec} -save ${save} -folder ${folder} -MWE_para ${MWE_para_outer} -model ${model} -target_sent ${target_sent}
 ```
 
-This will output ${folder}/reranked_attn_Nmask5_Nsplit1_attnL1_norm0_SEMEVAL_B_MWE_sim1_sent.train.EN.txt.pkl. This file pickles a Python list that consists of a list of their paraphrases with scores ([outer_probability, mask-filling probability]) for each target sentence.
+**This will output ${folder}/reranked_attn_Nmask5_Nsplit1_attnL1_norm0_SEMEVAL_B_MWE_sim1_sent.train.EN.txt.pkl; this file pickles a Python list that consists of a list of their paraphrases with scores ([outer_probability, mask-filling probability]) for each target sentence.**
 
-8. Evaluate MWE Paraphrases
+9. Evaluate MWE Paraphrases
 
 ```
 candidates=${folder}/reranked_attn_Nmask5_Nsplit1_attnL1_norm0_SEMEVAL_B_MWE_sim1_sent.train.EN.txt.pkl
@@ -144,5 +144,4 @@ in_out_w=1
 python eval_matching.py -remove_space -len_normalise -candidates ${candidates} -save ${save_file} -gold_labels ${gold} -sent_list ${target_sent} -in_out_w ${in_out_w}
 ```
 
-(If you set in_out_w to 0.5, it sorts paraphrases based on the rankings of the outer probability and mask-filling probability, which may work better on some data.)
-
+(If you set in_out_w to 0.5, it sorts paraphrases by averaging rankings based on the outer probability and mask-filling probability, which may work better on some data.)
