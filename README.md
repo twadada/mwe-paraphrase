@@ -84,12 +84,12 @@ model=bert-base-uncased
 n_mask=1
 beam_size=10
 echo "Generate 1-word paraphrases"
-CUDA_VISIBLE_DEVICES=0 python bert_generate.py  -clustered_sents ${clustered_sents} -folder ${folder} -model ${model} -n_mask $n_mask -num_beams ${beam_size}
+CUDA_VISIBLE_DEVICES=0 python generate.py  -clustered_sents ${clustered_sents} -folder ${folder} -model ${model} -n_mask $n_mask -num_beams ${beam_size}
 
 n_mask=2
 beam_size=5
 echo "Generate 2-word paraphrases"
-CUDA_VISIBLE_DEVICES=0 python bert_generate.py  -clustered_sents ${clustered_sents} -folder ${folder} -model ${model} -n_mask $n_mask -num_beams ${beam_size}
+CUDA_VISIBLE_DEVICES=0 python generate.py  -clustered_sents ${clustered_sents} -folder ${folder} -model ${model} -n_mask $n_mask -num_beams ${beam_size}
 ```
 
 Run the following command for using T5
@@ -99,7 +99,7 @@ folder=Result
 model=google/t5-v1_1-large
 n_mask=1
 beam_size=20
-CUDA_VISIBLE_DEVICES=0 python bert_generate.py -t5  -clustered_sents ${clustered_sents} -folder ${folder} -model ${model} -n_mask $n_mask -num_beams ${beam_size}
+CUDA_VISIBLE_DEVICES=0 python generate.py -t5  -clustered_sents ${clustered_sents} -folder ${folder} -model ${model} -n_mask $n_mask -num_beams ${beam_size}
 ```
 
 7. Perform reranking
