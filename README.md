@@ -56,7 +56,7 @@ python remove_duplicates.py -silver_sent ${silver_sent} -model bert-base-uncased
 
 5. Cluster the collected contexts
 
-You may skip the 3rd and 4th steps and prepare the sampled sentences ($sent) by yourself. The data format is dict{"MWE": List(sentences containing the MWE)} in a pickled file.
+You may skip the 3rd and 4th steps and prepare the sampled sentences ($sent) by yourself. The data format is dict{"MWE": List(raw text containing the MWE)} in a pickled file.
 
 ```
 sent=${folder}/$(basename "${MWEfile}")_silversent_cleaned.pkl
