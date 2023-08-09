@@ -1,5 +1,5 @@
-# Code for "Unsupervised Paraphrasing of Multiword Expressions" (Findings of ACL 2023)
-["Unsupervised Paraphrasing of Multiword Expressions" (Findings of ACL 2023)](https://aclanthology.org/2023.findings-acl.290)
+# "Unsupervised Paraphrasing of Multiword Expressions"
+Code for ["Unsupervised Paraphrasing of Multiword Expressions" (Findings of ACL 2023)](https://aclanthology.org/2023.findings-acl.290)
 
 If you use the code or embeddings, please cite the following paper:
 
