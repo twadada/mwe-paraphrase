@@ -99,7 +99,7 @@ folder=Result
 model=google/t5-v1_1-large
 n_mask=1
 beam_size=20
-CUDA_VISIBLE_DEVICES=0 python generate.py -t5  -clustered_sents ${clustered_sents} -folder ${folder} -model ${model} -n_mask $n_mask -num_beams ${beam_size}
+CUDA_VISIBLE_DEVICES=0 python generate.py  -clustered_sents ${clustered_sents} -folder ${folder} -model ${model} -n_mask $n_mask -num_beams ${beam_size}
 ```
 
 7. Perform reranking
@@ -117,7 +117,7 @@ Run the following command for using T5:
 model=google/t5-v1_1-large
 MWE_para="${folder}/1MASKs_candidates2inner_score.pkl"
 mask_opt=Rspan_Nmask5_Nsplit1
-CUDA_VISIBLE_DEVICES=0 python outer_prob_new.py -clustered_sents ${clustered_sents} -folder $folder -mask_opt ${mask_opt} -candidates ${MWE_para} -model ${model}
+CUDA_VISIBLE_DEVICES=0 python outer_prob_new.py -t5 -clustered_sents ${clustered_sents} -folder $folder -mask_opt ${mask_opt} -candidates ${MWE_para} -model ${model}
 ```
 
 8. Retrieve relevant paraphrases given target sentences
