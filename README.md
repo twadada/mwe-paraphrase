@@ -123,7 +123,7 @@ CUDA_VISIBLE_DEVICES=0 python outer_prob_new.py -t5 -clustered_sents ${clustered
 8. Retrieve relevant paraphrases given target sentences
 
 ```
-MWE_para_outer=${folder}/candidates2outer_score_model_${model}_${mask_opt}.pkl
+MWE_para_outer=${folder}/candidates2outer_score_model_$(basename "$model")_${mask_opt}.pkl
 vec=${cluster_folder}/vec.txt
 model=${cluster_model}
 target_sent=SEMEVAL_B_MWE_sim1_sent.train.EN.txt
